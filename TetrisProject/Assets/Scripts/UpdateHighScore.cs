@@ -14,6 +14,6 @@ public class UpdateHighScore : MonoBehaviour {
     {
         var textUIComp = GameObject.Find("HighScore").GetComponent<Text>();
         textUIComp.text = PlayerPrefs.GetInt("HighScore").ToString();
-        Debug.Log("HighScore=" + textUIComp.text);
+        //Debug.Log("HighScore=" + textUIComp.text);
     }
 }

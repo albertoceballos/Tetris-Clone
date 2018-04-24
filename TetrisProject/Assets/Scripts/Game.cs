@@ -32,7 +32,7 @@ public class Game : MonoBehaviour {
 
         nextShapeIndex = Random.Range(0, 6);
 
-        Vector3 nextShapePos = new Vector3(-3.77f, 18.45f, 0);
+        Vector3 nextShapePos = new Vector3(-1.5f, 16f, 0);
 
         if (upNextObject != null) {
             Destroy(upNextObject);

@@ -48,7 +48,7 @@ public class Board : MonoBehaviour {
         }
     }
 
-    public static void PrintArray()
+    /*public static void PrintArray()
     {
         string arrayOutput = "";
 
@@ -80,9 +80,9 @@ public class Board : MonoBehaviour {
 
         // Get a reference to the Text component
         // and change its value
-        var myArrayComp = GameObject.Find("MyArray").GetComponent<Text>();
-        myArrayComp.text = arrayOutput;
+        //var myArrayComp = GameObject.Find("MyArray").GetComponent<Text>();
+        //myArrayComp.text = arrayOutput;
 
-    }
+    }*/
 
 }

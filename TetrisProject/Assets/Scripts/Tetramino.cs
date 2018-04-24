@@ -198,7 +198,7 @@ public class Tetramino : MonoBehaviour {
             
         }
 
-        Board.PrintArray();
+        //Board.PrintArray();
     }
 
     void IncreaseTextUIScore() {
