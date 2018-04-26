@@ -12,9 +12,11 @@ public class Tetramino : MonoBehaviour {
     public static bool paused = false;
     public string highScoreText;
     public int highScore=0;
+    private Vector2 origin;
+    private float original;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         //PlayerPrefs.SetInt("HighScore", 0);
         Time.timeScale = 1;
         if (!IsInGrid()) {
@@ -23,7 +25,7 @@ public class Tetramino : MonoBehaviour {
 
             Invoke("OpenGameOverScene", .5f);
         }
-
+        original = Time.realtimeSinceStartup;
         getHighScore();
 
         //Debug.Log("Time.timeScale="+Time.timeScale);
@@ -34,7 +36,7 @@ public class Tetramino : MonoBehaviour {
     void getHighScore() {
         var textUIComp = GameObject.Find("HighScore").GetComponent<Text>();
         textUIComp.text = PlayerPrefs.GetInt("HighScore").ToString();
-        Debug.Log("HighScore=" + textUIComp.text);
+        //Debug.Log("HighScore=" + textUIComp.text);
         highScore = int.Parse(textUIComp.text);
     }
 
@@ -63,19 +65,120 @@ public class Tetramino : MonoBehaviour {
 	}
 
     void UpdateHighScore() {
-        Debug.Log("This is running");
+        //Debug.Log("This is running");
         var textUIComp = GameObject.Find("Score").GetComponent<Text>();
         int score = int.Parse(textUIComp.text);
-        Debug.Log("Highscore:" + highScore);
-        Debug.Log("textUIComp:" + textUIComp.text);
+       // Debug.Log("Highscore:" + highScore);
+        //Debug.Log("textUIComp:" + textUIComp.text);
         if (score > highScore) {
             PlayerPrefs.SetInt("HighScore", score);
             textUIComp.text = score.ToString();
         }
     }
-    
 
+    
     void CheckUserInput() {
+        //Debug.Log(Input.mousePosition);
+        if(Input.touchCount > 0)
+        {
+            Touch t = Input.touches[0];
+            
+            if (t.phase == TouchPhase.Began)
+            {
+                origin = t.position;
+            }
+            else if(t.phase == TouchPhase.Stationary)
+            {
+                float dt = original - Time.realtimeSinceStartup;
+                if (dt > 9000f)
+                {
+                    original = Time.realtimeSinceStartup;
+                    transform.Rotate(0, 0, 90);
+                    if (!IsInGrid())
+                    {
+                        transform.Rotate(0, 0, -90);
+                    }
+                    else
+                    {
+                        UpdateGameBoard();
+                        SoundManager.Instance.PlayOneShot(SoundManager.Instance.rotateSound);
+                    }
+                }
+                
+            }
+            else if (t.phase == TouchPhase.Moved)
+            {
+                Vector2 end = t.position;
+                float dx = end.x - origin.x;
+                float dy = end.y - origin.y;
+                if (dx > 1f)
+                {
+                    transform.position += new Vector3(1, 0, 0);
+                    // Debug.Log(transform.position);
+
+                    if (!IsInGrid())
+                    {
+                        transform.position += new Vector3(-1, 0, 0);
+                    }
+                    else
+                    {
+                        UpdateGameBoard();
+
+                        SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeMove);
+                    }
+                }
+                else if (dx < -1f)
+                {
+                    transform.position += new Vector3(-1, 0, 0);
+                    //Debug.Log(transform.position);
+
+                    if (!IsInGrid())
+                    {
+                        transform.position += new Vector3(1, 0, 0);
+                    }
+                    else
+                    {
+                        UpdateGameBoard();
+                        SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeMove);
+                    }
+                }
+                else if (dy < -1f)
+                {
+                    if (!IsInGrid())
+                    {
+                        transform.position += new Vector3(0, 1, 0);
+
+                        bool rowDeleted = Board.DeleteAllFullRows();
+
+
+
+
+                        if (rowDeleted)
+                        {
+
+                            IncreaseTextUIScore();
+                            UpdateHighScore();
+                            Board.DeleteAllFullRows();
+                            //TODO Change Score on UI
+                            //IncreaseTextUIScore();
+                        }
+
+                        enabled = false;
+                        FindObjectOfType<Game>().SpawnShape();
+                        SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeStop);
+                    }
+                    else
+                    {
+                        UpdateGameBoard();
+                        SoundManager.Instance.PlayOneShot(SoundManager.Instance.shapeMove);
+                    }
+                    transform.position += new Vector3(0, -1, 0);
+                    lastMoveDown = Time.time;
+                }
+                
+                
+            }
+        }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             transform.position += new Vector3(1, 0, 0);

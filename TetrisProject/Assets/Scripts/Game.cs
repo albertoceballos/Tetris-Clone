@@ -18,26 +18,20 @@ public class Game : MonoBehaviour {
         nextShapeIndex = Random.Range(0, 6);
         SpawnShape();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     public void SpawnShape() {
         int shapeIndex = nextShapeIndex;
         
-
         Instantiate(shapes[shapeIndex], transform.position, Quaternion.identity);
 
         nextShapeIndex = Random.Range(0, 6);
 
-        Vector3 nextShapePos = new Vector3(-1.5f, 16f, 0);
+        Vector3 nextShapePos = new Vector3(13.2f, 16f, 0);
 
         if (upNextObject != null) {
             Destroy(upNextObject);
         }
 
-        upNextObject = Instantiate(nextShapes[nextShapeIndex], nextShapePos, Quaternion.identity);
+        upNextObject = Instantiate(nextShapes[nextShapeIndex], nextShapePos, Quaternion.Euler(0,0,90));
     }
 }
