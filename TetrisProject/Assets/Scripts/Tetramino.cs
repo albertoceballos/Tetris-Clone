@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -87,12 +88,12 @@ public class Tetramino : MonoBehaviour {
             {
                 origin = t.position;
             }
-            else if(t.phase == TouchPhase.Stationary)
+            else if(t.phase == TouchPhase.Ended)
             {
-                float dt = original - Time.realtimeSinceStartup;
-                if (dt > 9000f)
+                float dx = t.position.x - origin.x;
+                float dy = t.position.y - origin.y;
+                if (Math.Abs(dx)<=2f && Math.Abs(dy)<=2f)
                 {
-                    original = Time.realtimeSinceStartup;
                     transform.Rotate(0, 0, 90);
                     if (!IsInGrid())
                     {
